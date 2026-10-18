@@ -1,0 +1,28 @@
+# PRIMARY host. OpenPak Xbox 360 token service (x360-xsts), Live service 33 (D7 on the KDC lists it).
+# Reached through the security gateway, which proxies the tunnelled connection to Traefik
+# (PathPrefix(/xsts) on the plain-HTTP entrypoint -> :10033).
+[Unit]
+Description=OpenPak Xbox 360 token service (x360-xsts): /xsts/xsts.svc/IWSTrust13, Live service 33
+
+[Container]
+ContainerName=openpak-x360-xsts
+Image=ghcr.io/openpak/x360-xsts:latest
+AutoUpdate=registry
+Network=openpak.network
+# Pin an unused address (run pin-ips.sh --apply for new quadlets).
+IP=10.89.2.253
+Environment=X360_XSTS_ADDR=:10033
+Environment=X360_XSTS_KEY=/var/lib/x360-xsts/signing.key
+Environment=X360_XSTS_DEBUG=true
+# Token signing key (created 0600 on first start). The container user is the image's app (uid 100).
+Volume=%h/openpak/deploy/x360-xsts/state:/var/lib/x360-xsts:rw,Z
+ReadOnly=true
+DropCapability=ALL
+NoNewPrivileges=true
+UserNS=keep-id:uid=100,gid=101
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=default.target
