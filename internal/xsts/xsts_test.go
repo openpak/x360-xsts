@@ -1,6 +1,9 @@
 package xsts
 
 import (
+	"net/http/httptest"
+
+	"github.com/openpak/x360-common/wire"
 	"net/http"
 	"strings"
 	"testing"
@@ -37,5 +40,19 @@ func TestIssueAndVerify(t *testing.T) {
 	}
 	if _, st, _ := h.Issue([]byte("<x/>"), "c", ""); st != http.StatusBadRequest {
 		t.Fatalf("claimless status %d", st)
+	}
+}
+
+func TestResponseHeaders(t *testing.T) {
+	h := &Handler{Key: []byte("k")}
+	rec := httptest.NewRecorder()
+	r := httptest.NewRequest("POST", Path, strings.NewReader(req))
+	r.Header.Set(wire.UsersHeader, "0009005f5139dadb:acct-1")
+	h.ServeHTTP(rec, r)
+	if rec.Code != 200 || rec.Header().Get("Content-Type") != "application/soap+xml" {
+		t.Fatalf("%d %v", rec.Code, rec.Header())
+	}
+	if _, has := rec.Header()["Date"]; !has || rec.Header()["Date"] != nil {
+		t.Fatalf("Date must be suppressed: %v", rec.Header()["Date"])
 	}
 }

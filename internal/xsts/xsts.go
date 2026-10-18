@@ -159,7 +159,11 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, why, status)
 		return
 	}
-	w.Header().Set("Content-Type", "application/soap+xml; charset=utf-8")
+	// The console's HTTP stack parses Date strictly and converts it with
+	// SystemTimeToFileTime; it needs none, so send none (a nil value stops net/http
+	// adding its own). Content-Type is not checked either: keep it minimal.
+	w.Header()["Date"] = nil
+	w.Header().Set("Content-Type", "application/soap+xml")
 	w.Header().Set("Content-Length", fmt.Sprint(len(out)))
 	w.Write(out)
 }
