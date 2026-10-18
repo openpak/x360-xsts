@@ -6,3 +6,5 @@
 
 - 2026-10-18: v0.9.1 minimal response headers (no Date, Content-Type application/soap+xml): the console's HTTP stack
   parses Date strictly.
+
+- 2026-10-18: v0.9.2 token sign/verify moved to x360-common/xstoken (shared with the REST services).
