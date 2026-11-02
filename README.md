@@ -27,7 +27,6 @@ X360_XSTS_KEY=./signing.key go run -mod=vendor ./cmd/x360-xsts
 
 - [Protocol](docs/protocol.md)
 - [Deploy](docs/deploy.md)
-- [Notes](docs/notes.md)
 
 ## Licence
 

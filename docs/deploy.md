@@ -11,3 +11,7 @@ entrypoint to it (the gateway proxies every service port to the primary's Traefi
 `go test -mod=vendor ./...`. Tag `vX.Y.Z` and CI publishes `ghcr.io/openpak/x360-xsts:latest` (amd64 + arm64); hosts
 auto-update `:latest`. The request/response format comes from the XAM analysis in the Wharf notes (xrl-schema-opcodes.md
 section 14). Licensed AGPL-3.0, see LICENSE.
+
+## Shared library
+
+The shared Go library [`x360-common`](https://github.com/openpak/x360-common) is consumed with `replace` and a committed `vendor/`. After changing x360-common, run `go mod vendor` here and commit.
