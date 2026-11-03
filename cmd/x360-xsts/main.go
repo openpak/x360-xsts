@@ -14,6 +14,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/openpak/x360-common/httplog"
 	"github.com/openpak/x360-common/wire"
 	"github.com/openpak/x360-xsts/internal/xsts"
 )
@@ -51,7 +52,7 @@ func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 	log.Info("x360-xsts listening", "addr", ln.Addr())
-	srv := &http.Server{Handler: wire.Guard(os.Getenv("X360_GATEWAY_KEY"), &xsts.Handler{Key: key, Log: log}), ReadHeaderTimeout: 10 * time.Second}
+	srv := &http.Server{Handler: httplog.Wrap(wire.Guard(os.Getenv("X360_GATEWAY_KEY"), &xsts.Handler{Key: key, Log: log})), ReadHeaderTimeout: 10 * time.Second}
 	go func() {
 		<-ctx.Done()
 		sc, cancel := context.WithTimeout(context.Background(), 5*time.Second)
